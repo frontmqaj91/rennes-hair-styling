@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "rewrites": [
+    { "source": "/login",           "destination": "/api/login" },
+    { "source": "/submit-booking",  "destination": "/api/submit-booking" },
+    { "source": "/bookings/:path*", "destination": "/api/bookings" },
+    { "source": "/bookings",        "destination": "/api/bookings" },
+    { "source": "/(.*)",            "destination": "/public/$1" }
+  ]
+}
