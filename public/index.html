@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Renne's Hair Styling</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-logo">Renne's</div>
+    <div class="nav-links">
+      <a href="#services">Services</a>
+      <a href="#contact">Contact</a>
+      <a href="/booking.html" class="nav-book">Book Now</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grain"></div>
+
+    <div class="hero-content">
+      <div class="badge">✨ 15+ Years of Experience ✨</div>
+
+      <h1 id="mainTitle">
+        <span class="word1">Renne's</span>
+        <em class="word2">Hair</em>
+        <span class="word3">Styling</span>
+      </h1>
+
+      <p class="tagline">Experience the best in hair care and styling,<br>to make you look and feel your best.</p>
+
+      <div class="hero-actions">
+        <a href="/booking.html" class="btn btn-primary">Book Now</a>
+        <a href="/login.html" class="btn btn-ghost">Admin Panel</a>
+      </div>
+    </div>
+
+    <div class="hero-scroll-hint">scroll ↓</div>
+  </div>
+
+  <!-- RATINGS CARD -->
+  <div class="ratings-card">
+    <div class="rating-content">
+      <div class="rating-num">
+        <span class="stars">⭐️</span>
+        <h3>4.9</h3>
+      </div>
+      <div class="rating-divider"></div>
+      <p>Excellent Customer Rating<br><strong>based on 500+ reviews</strong></p>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <section class="services" id="services">
+    <div class="services-inner">
+      <div class="section-label">What We Offer</div>
+      <h2 class="services-title">Our Services</h2>
+      <p class="services-sub">Premium hair care tailored to you</p>
+
+      <div class="services-grid">
+        <div class="service-item">
+          <span class="service-icon">✂️</span>
+          <span class="service-name">Haircuts</span>
+          <span class="service-price">$30</span>
+        </div>
+        <div class="service-item">
+          <span class="service-icon">🎨</span>
+          <span class="service-name">Hair Coloring</span>
+          <span class="service-price">$60</span>
+        </div>
+        <div class="service-item">
+          <span class="service-icon">💫</span>
+          <span class="service-name">Styling / Updo</span>
+          <span class="service-price">$40</span>
+        </div>
+        <div class="service-item">
+          <span class="service-icon">✨</span>
+          <span class="service-name">Extensions</span>
+          <span class="service-price">$50</span>
+        </div>
+        <div class="service-item">
+          <span class="service-icon">💧</span>
+          <span class="service-name">Deep Conditioning</span>
+          <span class="service-price">$30</span>
+        </div>
+        <div class="service-item">
+          <span class="service-icon">🌿</span>
+          <span class="service-name">Facial Wax</span>
+          <span class="service-price">$20</span>
+        </div>
+        <div class="service-item">
+          <span class="service-icon">💎</span>
+          <span class="service-name">Keratin Treatment</span>
+          <span class="service-price">$60</span>
+        </div>
+        <div class="service-item">
+          <span class="service-icon">🪄</span>
+          <span class="service-name">Hair Styling</span>
+          <span class="service-price">$40</span>
+        </div>
+        <div class="service-item service-item--more">
+          <span class="service-name">And much more...</span>
+        </div>
+      </div>
+
+      <a href="/booking.html" class="btn btn-primary" style="margin-top:48px;display:inline-block;">Reserve Your Spot</a>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <div class="contact" id="contact">
+    <div class="section-label">Get In Touch</div>
+    <h2>Contact Us</h2>
+    <p class="contact-sub">Have questions or want to speak with one of our stylists? Contact us today!</p>
+
+    <div class="contact-grid">
+      <div class="contact-item">
+        <div class="contact-icon">📞</div>
+        <h4>Phone</h4>
+        <p>(123) 456-7890</p>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">📧</div>
+        <h4>Email</h4>
+        <p>info@renneshairstyling.com</p>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">📍</div>
+        <h4>Location</h4>
+        <a href="https://maps.google.com?q=4926 Monroe rd, charlotte,nc 28205" target="_blank">
+          4926 Monroe Rd,<br>Charlotte, NC 28205
+        </a>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">⏰</div>
+        <h4>Hours</h4>
+        <p>Mon–Fri: 9am – 7pm<br>Sat: 10am – 6pm<br>Sun: Closed</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-logo">Renne's Hair Styling</div>
+    <p>&copy; 2024 Renne's Hair Styling. All rights reserved.</p>
+    <p>Made by <a href="https://frontcraftdev.com" target="_blank">FrontCraftDev.com</a></p>
+  </footer>
+
+</body>
+
+<script>
+  // Navbar scroll
+  window.addEventListener("scroll", function () {
+    const navbar = document.getElementById("navbar");
+    const title  = document.getElementById("mainTitle");
+    if (window.scrollY > 80) {
+      navbar.classList.add("scrolled");
+      title.classList.add("scrolled");
+    } else {
+      navbar.classList.remove("scrolled");
+      title.classList.remove("scrolled");
+    }
+  });
+
+  // Reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add("visible"), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll(".service-item, .contact-item, .ratings-card").forEach(el => {
+    el.classList.add("reveal");
+    observer.observe(el);
+  });
+</script>
+
+</html>

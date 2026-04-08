@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel — Renne's Hair Styling</title>
+  <link rel="stylesheet" href="/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body class="admin-page">
+
+<!-- MOBILE TOP BAR -->
+<div class="admin-mobile-bar">
+  <div class="admin-mobile-logo">Renne's Admin</div>
+  <button class="admin-hamburger" onclick="openDrawer()">☰</button>
+</div>
+
+<!-- DRAWER OVERLAY -->
+<div class="admin-drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+
+<!-- MOBILE DRAWER -->
+<div class="admin-drawer" id="adminDrawer">
+  <div class="drawer-header">
+    <div class="drawer-logo">Renne's</div>
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+  </div>
+  <nav class="drawer-nav">
+    <a class="sidebar-link active" onclick="showSection('appointments');closeDrawer()"><span class="sidebar-icon">📅</span> Appointments</a>
+    <a class="sidebar-link" onclick="showSection('customers');closeDrawer()"><span class="sidebar-icon">👤</span> Customers</a>
+  </nav>
+  <div class="drawer-footer">
+    <a href="/logout" class="sidebar-logout">⎋ Logout</a>
+    <a href="/index.html" class="sidebar-back">← Back to Site</a>
+  </div>
+</div>
+
+<!-- DESKTOP SIDEBAR -->
+<aside class="admin-sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-name">Renne's</div>
+    <div class="sidebar-logo-sub">Admin Panel</div>
+  </div>
+  <nav class="sidebar-nav">
+    <a class="sidebar-link active" id="nav-appointments" onclick="showSection('appointments')"><span class="sidebar-icon">📅</span> Appointments</a>
+    <a class="sidebar-link" id="nav-customers" onclick="showSection('customers')"><span class="sidebar-icon">👤</span> Customers</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="/logout" class="sidebar-logout">⎋ Logout</a>
+    <a href="/index.html" class="sidebar-back">← Back to Site</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="admin-main">
+
+  <!-- ===== APPOINTMENTS SECTION ===== -->
+  <div id="section-appointments">
+    <div class="admin-topbar">
+      <div>
+        <h2 class="admin-page-title">Appointments</h2>
+        <p class="admin-page-sub">Manage all bookings</p>
+      </div>
+      <button class="admin-refresh-btn" onclick="loadBookings()">↻ Refresh</button>
+    </div>
+
+    <div class="admin-stats">
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-info"><div class="stat-value" id="statTotal">—</div><div class="stat-label">Total</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📆</div>
+        <div class="stat-info"><div class="stat-value" id="statToday">—</div><div class="stat-label">Today</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-info"><div class="stat-value" id="statDone">—</div><div class="stat-label">Completed</div></div>
+      </div>
+    </div>
+
+    <div class="admin-table-wrap">
+      <div class="admin-table-header">
+        <h3>All Bookings</h3>
+        <input class="admin-search" type="text" placeholder="🔍 Search..." oninput="filterTable(this.value)">
+      </div>
+      <div class="admin-loading" id="loadingState"><div class="loading-spinner"></div><p>Loading...</p></div>
+      <div class="admin-empty" id="emptyState" style="display:none;"><div class="empty-icon">📭</div><p>No bookings yet</p></div>
+      <div class="table-container" id="tableContainer" style="display:none;">
+        <table id="bookingTable">
+          <thead>
+            <tr>
+              <th>#</th><th>Name</th><th>Phone</th><th>Service</th><th>Date</th><th>Time</th><th>Status</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="bookingTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CUSTOMERS SECTION ===== -->
+  <div id="section-customers" style="display:none;">
+    <div class="admin-topbar">
+      <div>
+        <h2 class="admin-page-title">Customers</h2>
+        <p class="admin-page-sub">All unique customers</p>
+      </div>
+      <button class="admin-refresh-btn" onclick="loadCustomers()">↻ Refresh</button>
+    </div>
+    <div class="admin-stats">
+      <div class="stat-card">
+        <div class="stat-icon">👤</div>
+        <div class="stat-info"><div class="stat-value" id="statCustomers">—</div><div class="stat-label">Total Customers</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🔁</div>
+        <div class="stat-info"><div class="stat-value" id="statReturning">—</div><div class="stat-label">Returning</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🌟</div>
+        <div class="stat-info"><div class="stat-value" id="statTopCustomer">—</div><div class="stat-label">Top Customer</div></div>
+      </div>
+    </div>
+    <div class="admin-table-wrap">
+      <div class="admin-table-header">
+        <h3>Customer List</h3>
+        <input class="admin-search" type="text" placeholder="🔍 Search customer..." oninput="filterCustomers(this.value)">
+      </div>
+      <div class="table-container" id="customerTableContainer" style="display:none;">
+        <table>
+          <thead>
+            <tr><th>#</th><th>Name</th><th>Phone</th><th>Visits</th><th>Last Service</th><th>Last Visit</th></tr>
+          </thead>
+          <tbody id="customerTableBody"></tbody>
+        </table>
+      </div>
+      <div class="admin-empty" id="customerEmpty" style="display:none;"><div class="empty-icon">👤</div><p>No customers yet</p></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ===== EDIT MODAL ===== -->
+<div class="modal-overlay" id="editModal" style="display:none;">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Edit Booking</h3>
+      <button class="modal-close" onclick="closeModal('editModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editId">
+      <div class="form-group">
+        <label>Service</label>
+        <select id="editService" class="input-field">
+          <option value="Haircut">Haircut - $30</option>
+          <option value="Hair Coloring">Hair Coloring - $60</option>
+          <option value="Styling/Updo">Styling/Updo - $40</option>
+          <option value="Extensions">Extensions - $50</option>
+          <option value="Deep Conditioning">Deep Conditioning - $30</option>
+          <option value="Facial Wax">Facial Wax - $20</option>
+          <option value="Keratin Treatment">Keratin Treatment - $60</option>
+          <option value="Hair Styling">Hair Styling - $40</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" id="editDate" class="input-field">
+      </div>
+      <div class="form-group">
+        <label>Time</label>
+        <div class="time-picker" id="editTimePicker">
+          <div class="time-slots-grid" id="timeGrid"></div>
+        </div>
+        <input type="hidden" id="editTime">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="saveEdit()">Save Changes</button>
+      <button class="btn btn-ghost" onclick="closeModal('editModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DELETE CONFIRM MODAL ===== -->
+<div class="modal-overlay" id="deleteModal" style="display:none;">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h3>⚠️ Delete Booking</h3>
+      <button class="modal-close" onclick="closeModal('deleteModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="color:var(--muted);line-height:1.7;">Are you sure you want to delete the booking for <strong id="deleteNameDisplay" style="color:var(--text)"></strong>? This action cannot be undone.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" onclick="confirmDelete()">Yes, Delete</button>
+      <button class="btn btn-ghost" onclick="closeModal('deleteModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== COMPLETE CONFIRM MODAL ===== -->
+<div class="modal-overlay" id="completeModal" style="display:none;">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h3>✅ Complete Appointment</h3>
+      <button class="modal-close" onclick="closeModal('completeModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="color:var(--muted);line-height:1.7;">Mark appointment for <strong id="completeNameDisplay" style="color:var(--text)"></strong> as completed and remove from active list?</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-success" onclick="confirmComplete()">Yes, Complete</button>
+      <button class="btn btn-ghost" onclick="closeModal('completeModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:#1C1A16;border:1px solid rgba(201,168,76,0.4);border-radius:12px;padding:14px 24px;display:flex;align-items:center;gap:12px;box-shadow:0 12px 40px rgba(0,0,0,0.6);z-index:9999;opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);min-width:260px;max-width:90vw;pointer-events:none;">
+  <span id="toastIcon" style="font-size:1.3rem">✅</span>
+  <div>
+    <div id="toastTitle" style="font-weight:600;color:#E8C97A;font-size:0.9rem;margin-bottom:2px"></div>
+    <div id="toastMsg" style="color:#8A7F6A;font-size:0.82rem"></div>
+  </div>
+</div>
+
+<script>
+// ===================== STATE =====================
+var allAppointments = [];
+var allCustomers    = [];
+var pendingDeleteId  = null;
+var pendingCompleteId = null;
+
+var SERVICES = ['Haircut','Hair Coloring','Styling/Updo','Extensions','Deep Conditioning','Facial Wax','Keratin Treatment','Hair Styling'];
+var TIME_SLOTS = ['9:00 AM','9:30 AM','10:00 AM','10:30 AM','11:00 AM','11:30 AM','12:00 PM','12:30 PM','1:00 PM','1:30 PM','2:00 PM','2:30 PM','3:00 PM','3:30 PM','4:00 PM','4:30 PM','5:00 PM','5:30 PM','6:00 PM','6:30 PM'];
+
+// ===================== NAVIGATION =====================
+function showSection(name) {
+  document.getElementById('section-appointments').style.display = name === 'appointments' ? 'block' : 'none';
+  document.getElementById('section-customers').style.display    = name === 'customers'    ? 'block' : 'none';
+  document.querySelectorAll('.sidebar-link').forEach(function(l){ l.classList.remove('active'); });
+  var el = document.getElementById('nav-' + name);
+  if (el) el.classList.add('active');
+  if (name === 'appointments') loadBookings();
+  if (name === 'customers')    loadCustomers();
+}
+
+// ===================== DRAWER =====================
+function openDrawer() {
+  document.getElementById('adminDrawer').classList.add('open');
+  document.getElementById('drawerOverlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+  document.getElementById('adminDrawer').classList.remove('open');
+  document.getElementById('drawerOverlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+// ===================== TOAST =====================
+function showToast(icon, title, msg, success) {
+  if (success === undefined) success = true;
+  var t = document.getElementById('toast');
+  t.style.borderColor = success ? 'rgba(201,168,76,0.4)' : 'rgba(224,85,85,0.4)';
+  document.getElementById('toastIcon').textContent  = icon;
+  document.getElementById('toastTitle').textContent = title;
+  document.getElementById('toastTitle').style.color = success ? '#E8C97A' : '#E05555';
+  document.getElementById('toastMsg').textContent   = msg;
+  t.style.opacity   = '1';
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  setTimeout(function(){
+    t.style.opacity   = '0';
+    t.style.transform = 'translateX(-50%) translateY(100px)';
+  }, 3000);
+}
+
+// ===================== MODAL =====================
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+// ===================== LOAD BOOKINGS =====================
+async function loadBookings() {
+  document.getElementById('loadingState').style.display   = 'flex';
+  document.getElementById('tableContainer').style.display = 'none';
+  document.getElementById('emptyState').style.display     = 'none';
+  var res  = await fetch('/bookings', { credentials: 'include' });
+  var data = await res.json();
+  allAppointments = data.filter(function(b){ return b.status !== 'completed'; });
+  updateStats(allAppointments);
+  renderTable(allAppointments);
+}
+
+function renderTable(list) {
+  document.getElementById('loadingState').style.display = 'none';
+  if (!list.length) {
+    document.getElementById('emptyState').style.display    = 'flex';
+    document.getElementById('tableContainer').style.display = 'none';
+    return;
+  }
+  document.getElementById('emptyState').style.display    = 'none';
+  document.getElementById('tableContainer').style.display = 'block';
+  var tbody = document.getElementById('bookingTableBody');
+  tbody.innerHTML = '';
+  list.forEach(function(b, i) {
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td class="row-num">'+ (i+1) +'</td>'+
+      '<td class="row-name">'+ b.name +'</td>'+
+      '<td class="row-phone">'+ b.phone +'</td>'+
+      '<td><span class="service-tag">'+ b.service +'</span></td>'+
+      '<td>'+ formatDate(b.date) +'</td>'+
+      '<td class="row-time">'+ formatTime(b.time) +'</td>'+
+      '<td><span class="status-badge status-'+(b.status||'active')+'">'+(b.status||'active')+'</span></td>'+
+      '<td>'+
+        '<div class="action-btns">'+
+          '<button class="act-btn act-edit" onclick="openEdit('+ b.id +')">✏️</button>'+
+          '<button class="act-btn act-done" onclick="openComplete('+ b.id +', \''+ b.name +'\')">✅</button>'+
+          '<button class="act-btn act-del"  onclick="openDelete('+ b.id +', \''+ b.name +'\')">🗑</button>'+
+        '</div>'+
+      '</td>';
+    tbody.appendChild(tr);
+  });
+}
+
+function updateStats(list) {
+  document.getElementById('statTotal').textContent = allAppointments.length;
+  var today = new Date().toISOString().split('T')[0];
+  document.getElementById('statToday').textContent = list.filter(function(b){ return b.date === today; }).length;
+  // completed count from all (including completed ones stored separately)
+  document.getElementById('statDone').textContent = (window._completedCount || 0);
+}
+
+function filterTable(q) {
+  q = q.toLowerCase();
+  renderTable(allAppointments.filter(function(b){
+    return b.name.toLowerCase().includes(q) || b.phone.includes(q);
+  }));
+}
+
+// ===================== EDIT =====================
+function openEdit(id) {
+  var b = allAppointments.find(function(x){ return x.id === id; });
+  if (!b) return;
+  document.getElementById('editId').value = id;
+  document.getElementById('editService').value = b.service;
+  document.getElementById('editDate').value    = b.date;
+  document.getElementById('editTime').value    = b.time;
+  buildTimeGrid(b.time);
+  document.getElementById('editModal').style.display = 'flex';
+}
+
+function buildTimeGrid(selected) {
+  var grid = document.getElementById('timeGrid');
+  grid.innerHTML = '';
+  TIME_SLOTS.forEach(function(slot) {
+    var btn = document.createElement('button');
+    btn.className  = 'time-slot-btn' + (slot === selected ? ' selected' : '');
+    btn.textContent = slot;
+    btn.onclick = function() {
+      document.querySelectorAll('.time-slot-btn').forEach(function(b){ b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      document.getElementById('editTime').value = slot;
+    };
+    grid.appendChild(btn);
+  });
+}
+
+async function saveEdit() {
+  var id      = document.getElementById('editId').value;
+  var service = document.getElementById('editService').value;
+  var date    = document.getElementById('editDate').value;
+  var time    = document.getElementById('editTime').value;
+  if (!date || !time) { showToast('⚠️','Missing fields','Please select date and time', false); return; }
+  var res = await fetch('/bookings/' + id, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ service: service, date: date, time: time })
+  });
+  if (res.ok) {
+    closeModal('editModal');
+    showToast('✅','Updated!','Booking has been updated');
+    loadBookings();
+  } else {
+    showToast('❌','Error','Could not update booking', false);
+  }
+}
+
+// ===================== DELETE =====================
+function openDelete(id, name) {
+  pendingDeleteId = id;
+  document.getElementById('deleteNameDisplay').textContent = name;
+  document.getElementById('deleteModal').style.display = 'flex';
+}
+
+async function confirmDelete() {
+  var res = await fetch('/bookings/' + pendingDeleteId, {
+    method: 'DELETE',
+    credentials: 'include'
+  });
+  closeModal('deleteModal');
+  if (res.ok) {
+    showToast('🗑','Deleted','Booking removed successfully');
+    loadBookings();
+  } else {
+    showToast('❌','Error','Could not delete', false);
+  }
+}
+
+// ===================== COMPLETE =====================
+function openComplete(id, name) {
+  pendingCompleteId = id;
+  document.getElementById('completeNameDisplay').textContent = name;
+  document.getElementById('completeModal').style.display = 'flex';
+}
+
+async function confirmComplete() {
+  var res = await fetch('/bookings/' + pendingCompleteId + '/complete', {
+    method: 'PATCH',
+    credentials: 'include'
+  });
+  closeModal('completeModal');
+  if (res.ok) {
+    window._completedCount = (window._completedCount || 0) + 1;
+    showToast('✅','Completed!','Appointment marked as done');
+    loadBookings();
+  } else {
+    showToast('❌','Error','Could not complete', false);
+  }
+}
+
+// ===================== CUSTOMERS =====================
+async function loadCustomers() {
+  var res  = await fetch('/bookings', { credentials: 'include' });
+  var data = await res.json();
+
+  // Group by phone
+  var map = {};
+  data.forEach(function(b) {
+    if (!map[b.phone]) {
+      map[b.phone] = { name: b.name, phone: b.phone, visits: 0, lastService: '', lastDate: '' };
+    }
+    map[b.phone].visits++;
+    if (!map[b.phone].lastDate || b.date > map[b.phone].lastDate) {
+      map[b.phone].lastDate    = b.date;
+      map[b.phone].lastService = b.service;
+    }
+  });
+
+  allCustomers = Object.values(map).sort(function(a,b){ return b.visits - a.visits; });
+  renderCustomers(allCustomers);
+
+  document.getElementById('statCustomers').textContent  = allCustomers.length;
+  document.getElementById('statReturning').textContent  = allCustomers.filter(function(c){ return c.visits > 1; }).length;
+  document.getElementById('statTopCustomer').textContent = allCustomers.length ? allCustomers[0].name.split(' ')[0] : '—';
+}
+
+function renderCustomers(list) {
+  if (!list.length) {
+    document.getElementById('customerEmpty').style.display          = 'flex';
+    document.getElementById('customerTableContainer').style.display = 'none';
+    return;
+  }
+  document.getElementById('customerEmpty').style.display          = 'none';
+  document.getElementById('customerTableContainer').style.display = 'block';
+  var tbody = document.getElementById('customerTableBody');
+  tbody.innerHTML = '';
+  list.forEach(function(c, i) {
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td class="row-num">'+ (i+1) +'</td>'+
+      '<td class="row-name">'+ c.name +'</td>'+
+      '<td class="row-phone">'+ c.phone +'</td>'+
+      '<td><span class="visits-badge">'+ c.visits + (c.visits > 1 ? ' visits' : ' visit') +'</span></td>'+
+      '<td><span class="service-tag">'+ c.lastService +'</span></td>'+
+      '<td>'+ formatDate(c.lastDate) +'</td>';
+    tbody.appendChild(tr);
+  });
+}
+
+function filterCustomers(q) {
+  q = q.toLowerCase();
+  renderCustomers(allCustomers.filter(function(c){
+    return c.name.toLowerCase().includes(q) || c.phone.includes(q);
+  }));
+}
+
+// ===================== HELPERS =====================
+function formatDate(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+}
+
+function formatTime(t) {
+  if (!t) return '—';
+  // if already like "9:00 AM" return as is
+  if (t.includes('AM') || t.includes('PM')) return t;
+  // convert 24h to 12h
+  var parts = t.split(':');
+  var h = parseInt(parts[0]), m = parts[1];
+  var ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  return h + ':' + m + ' ' + ampm;
+}
+
+// Init
+loadBookings();
+</script>
+
+</body>
+</html>

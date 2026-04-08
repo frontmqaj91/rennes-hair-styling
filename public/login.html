@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login — Renne's Hair Styling</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+
+<body class="login-page">
+
+  <div class="login-container">
+
+    <div class="login-brand">
+      <div class="login-logo">Renne's</div>
+      <div class="login-logo-sub">Hair Styling</div>
+    </div>
+
+    <div class="login-form-wrap">
+      <h2 class="login-title">Admin Login</h2>
+      <p class="login-subtitle">Enter your credentials to access the admin panel.</p>
+
+      <form id="loginForm" class="login-form">
+
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" class="input-field"
+            placeholder="Enter username" autocomplete="username" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" class="input-field"
+            placeholder="Enter password" autocomplete="current-password" required>
+        </div>
+
+        <div id="loginError" class="login-error" style="display:none;">
+          ⚠ Invalid credentials. Please try again.
+        </div>
+
+        <div class="button-group">
+          <button type="submit" class="btn login-btn" id="loginBtn">Login</button>
+          <button type="button" class="btn back-btn"
+            onclick="window.location.href='index.html'">← Back</button>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const loginBtn = document.getElementById('loginBtn');
+      const errorEl  = document.getElementById('loginError');
+
+      loginBtn.textContent = 'Logging in...';
+      loginBtn.disabled = true;
+      errorEl.style.display = 'none';
+
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      // ✅ Fetch unchanged — same endpoint, same headers
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ username, password })
+      });
+
+      if (response.ok) {
+        window.location.href = '/admin.html';
+      } else {
+        errorEl.style.display = 'block';
+        loginBtn.textContent = 'Login';
+        loginBtn.disabled = false;
+      }
+    });
+  </script>
+
+</body>
+</html>

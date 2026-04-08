@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Appointment — Renne's Hair Styling</title>
+  <link rel="stylesheet" href="/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body class="booking-page">
+
+  <nav class="navbar" id="navbar">
+    <div class="nav-logo">Renne's</div>
+    <div class="nav-links">
+      <a href="/index.html">Home</a>
+      <a href="/index.html#services">Services</a>
+      <a href="/index.html#contact">Contact</a>
+    </div>
+  </nav>
+
+  <div class="booking-container">
+    <div class="booking-header">
+      <div class="section-label">Schedule a Visit</div>
+      <h2 class="booking-title">Book Your Appointment</h2>
+      <p class="booking-subtitle">Fill out the form below to schedule your visit.</p>
+    </div>
+
+    <form class="booking-form" id="bookingForm">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="name" name="name" placeholder="Your name" required>
+      </div>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="text" id="phone" name="phone" placeholder="(123) 456-7890" required>
+      </div>
+      <div class="form-group">
+        <label>Service</label>
+        <select id="service" name="service" required>
+          <option value="">Select a service</option>
+          <option value="Haircut">Haircut — $30</option>
+          <option value="Hair Coloring">Hair Coloring — $60</option>
+          <option value="Styling/Updo">Styling / Updo — $40</option>
+          <option value="Extensions">Extensions — $50</option>
+          <option value="Deep Conditioning">Deep Conditioning — $30</option>
+          <option value="Facial Wax">Facial Wax — $20</option>
+          <option value="Keratin Treatment">Keratin Treatment — $60</option>
+          <option value="Hair Styling">Hair Styling — $40</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" id="date" name="date" required>
+      </div>
+
+      <!-- TIME PICKER -->
+      <div class="form-group">
+        <label>Select Time</label>
+        <div class="time-picker-wrap">
+          <div class="time-slots-grid" id="timeGrid"></div>
+        </div>
+        <input type="hidden" id="time" name="time" required>
+        <p class="time-hint" id="timeHint" style="color:#E05555;font-size:0.78rem;margin-top:6px;display:none;">Please select a time slot</p>
+      </div>
+
+      <div class="button-group">
+        <button type="submit" class="btn submit-btn" id="submitBtn">Book Now</button>
+        <button type="button" class="btn back-btn" onclick="window.location.href='/index.html'">Back</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:#1C1A16;border:1px solid rgba(201,168,76,0.4);border-radius:12px;padding:14px 24px;display:flex;align-items:center;gap:12px;box-shadow:0 12px 40px rgba(0,0,0,0.6);z-index:9999;opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);min-width:260px;max-width:90vw;pointer-events:none;">
+    <span id="toastIcon" style="font-size:1.3rem">✅</span>
+    <div>
+      <div id="toastTitle" style="font-weight:600;color:#E8C97A;font-size:0.9rem;margin-bottom:2px"></div>
+      <div id="toastMsg" style="color:#8A7F6A;font-size:0.82rem"></div>
+    </div>
+  </div>
+
+  <script>
+    var TIME_SLOTS = ['9:00 AM','9:30 AM','10:00 AM','10:30 AM','11:00 AM','11:30 AM','12:00 PM','12:30 PM','1:00 PM','1:30 PM','2:00 PM','2:30 PM','3:00 PM','3:30 PM','4:00 PM','4:30 PM','5:00 PM','5:30 PM','6:00 PM','6:30 PM'];
+
+    // Navbar scroll
+    window.addEventListener('scroll', function() {
+      var n = document.getElementById('navbar');
+      if (window.scrollY > 40) n.classList.add('scrolled');
+      else n.classList.remove('scrolled');
+    });
+
+    // Min date = today
+    document.getElementById('date').min = new Date().toISOString().split('T')[0];
+
+    // Build time grid
+    function buildTimeGrid() {
+      var grid = document.getElementById('timeGrid');
+      grid.innerHTML = '';
+      TIME_SLOTS.forEach(function(slot) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'time-slot-btn';
+        btn.textContent = slot;
+        btn.onclick = function() {
+          document.querySelectorAll('.time-slot-btn').forEach(function(b){ b.classList.remove('selected'); });
+          btn.classList.add('selected');
+          document.getElementById('time').value = slot;
+          document.getElementById('timeHint').style.display = 'none';
+        };
+        grid.appendChild(btn);
+      });
+    }
+
+    buildTimeGrid();
+
+    // Toast helper
+    function showToast(icon, title, msg, success) {
+      if (success === undefined) success = true;
+      var t = document.getElementById('toast');
+      t.style.borderColor = success ? 'rgba(201,168,76,0.4)' : 'rgba(224,85,85,0.4)';
+      document.getElementById('toastIcon').textContent  = icon;
+      document.getElementById('toastTitle').textContent = title;
+      document.getElementById('toastTitle').style.color = success ? '#E8C97A' : '#E05555';
+      document.getElementById('toastMsg').textContent   = msg;
+      t.style.opacity   = '1';
+      t.style.transform = 'translateX(-50%) translateY(0)';
+      setTimeout(function(){
+        t.style.opacity   = '0';
+        t.style.transform = 'translateX(-50%) translateY(100px)';
+      }, 3500);
+    }
+
+    // Submit
+    document.getElementById('bookingForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      var time = document.getElementById('time').value;
+      if (!time) { document.getElementById('timeHint').style.display = 'block'; return; }
+
+      var btn = document.getElementById('submitBtn');
+      btn.textContent = 'Booking...';
+      btn.disabled = true;
+
+      try {
+        var res = await fetch('/submit-booking', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name:    document.getElementById('name').value,
+            phone:   document.getElementById('phone').value,
+            service: document.getElementById('service').value,
+            date:    document.getElementById('date').value,
+            time:    time
+          })
+        });
+        if (res.ok) {
+          showToast('✅', 'Booking Confirmed!', "We'll see you soon. Redirecting...", true);
+          setTimeout(function(){ window.location.href = '/index.html'; }, 2500);
+        } else {
+          var data = await res.json().catch(function(){ return {}; });
+          showToast('⚠️', 'Failed', data.message || 'Please try again.', false);
+          btn.textContent = 'Book Now';
+          btn.disabled = false;
+        }
+      } catch(err) {
+        showToast('❌', 'Connection Error', 'Make sure the server is running.', false);
+        btn.textContent = 'Book Now';
+        btn.disabled = false;
+      }
+    });
+  </script>
+
+</body>
+</html>
