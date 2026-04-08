@@ -2,7 +2,7 @@
   "name": "rennes-hair-styling",
   "version": "1.0.0",
   "dependencies": {
-    "jsonwebtoken": "^9.0.2",
-    "@upstash/redis": "^1.28.0"
+    "@upstash/redis": "^1.37.0",
+    "jsonwebtoken": "^9.0.2"
   }
 }
